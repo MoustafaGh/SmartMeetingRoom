@@ -1,0 +1,15 @@
+.notifications-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.notifications-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}

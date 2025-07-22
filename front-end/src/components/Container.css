@@ -1,0 +1,10 @@
+.Container {
+  display: flex;
+  height: 100vh;
+  background-color: #fff;
+  margin: 0px;
+  flex-direction: column;
+  /* min-width: 85%; */
+  /* max-width: 95%; */
+  width: 85%;
+}

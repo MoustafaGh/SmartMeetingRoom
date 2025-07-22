@@ -1,0 +1,42 @@
+.meeting-card {
+  width: 300px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.meeting-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.meeting-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #1976d2;
+}
+
+.meeting-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meeting-description {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+.meeting-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #666;
+  font-weight: bold;
+}

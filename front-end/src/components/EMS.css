@@ -1,0 +1,61 @@
+.ems-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ems-container h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.ems-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ems-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.ems-tabs button.active {
+  background-color: #1976d2;
+  color: white;
+}
+
+.ems-tabs button:hover {
+  background-color: #d5d5d5;
+}
+
+.ems-content {
+  flex: 1;
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  /* overflow-y: auto; */
+}
+
+.ems-section {
+  margin-bottom: 30px;
+}
+
+hr {
+  margin: 20px 0;
+  border: 0;
+  height: 1px;
+  background: #ddd;
+}

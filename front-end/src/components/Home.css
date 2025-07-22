@@ -1,0 +1,16 @@
+body {
+  max-width: 100%;
+  margin: 0 px; 
+  padding: 0 px;
+  text-align: center;
+  background-color: #F8FAFC;
+}
+.Home{
+  display: flex;
+  flex-direction: row;
+  font-family: sans-serif
+}
+i{
+  font-size: 25px;
+}
+
