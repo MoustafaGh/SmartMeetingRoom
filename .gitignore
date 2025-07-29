@@ -1,0 +1,15 @@
+# Ignore Visual Studio folder
+.vs/
+
+# Ignore Node.js dependencies and builds
+node_modules/
+dist/
+build/
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
