@@ -1,15 +1,21 @@
-# Ignore Visual Studio folder
-.vs/
+# ==== General ====
+.DS_Store
+Thumbs.db
+*.log
+.env
 
-# Ignore Node.js dependencies and builds
+# ==== Node.js / Frontend ====
 node_modules/
 dist/
 build/
 
-# Logs and system files
-*.log
-.DS_Store
-Thumbs.db
+# ==== Visual Studio / .NET (Backend) ====
+.vs/
+bin/
+obj/
+*.user
+*.suo
 
-# Environment files
-.env
+# ==== IDEs ====
+.idea/
+.vscode/
