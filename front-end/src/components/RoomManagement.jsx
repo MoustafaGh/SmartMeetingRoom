@@ -1,56 +1,121 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "../api";
 import "./RoomManagement.css";
+import EditRoomModal from "./EditRoomModal";
+import CreateRoom from "./CreateRoom";
+import ConfirmationModal from "./ConfirmationModal";
 
 function RoomManagement() {
-  const [mode, setMode] = useState("create");
+  const [rooms, setRooms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreate, setShowCreate] = useState(true);
+  const [editRoom, setEditRoom] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  const fetchRooms = async () => {
+    try {
+      const res = await api.get("/Room");
+      setRooms(res.data);
+    } catch {
+      alert("Failed to load rooms.");
+    }
+  };
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
+  const handleDeleteRoom = async (id) => {
+    try {
+      await api.delete(`/Room/${id}`);
+      fetchRooms();
+      setConfirmDeleteId(null);
+    } catch {
+      alert("Failed to delete room.");
+    }
+  };
+
+  const filteredRooms = rooms.filter((r) =>
+    r.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="room-management">
       <div className="mode-toggle">
         <button
-          className={mode === "create" ? "active" : ""}
-          onClick={() => setMode("create")}
+          className={showCreate ? "active" : ""}
+          onClick={() => setShowCreate(true)}
         >
           Create Room
         </button>
         <button
-          className={mode === "edit" ? "active" : ""}
-          onClick={() => setMode("edit")}
+          className={!showCreate ? "active" : ""}
+          onClick={() => setShowCreate(false)}
         >
-          Edit Room
+          Manage Rooms
         </button>
       </div>
 
-      {mode === "create" ? (
-        <form className="room-form">
-          <div className="field">
-            <label>Floor</label>
-            <input type="text" placeholder="Enter floor" />
-          </div>
-          <div className="field">
-            <label>Room Number</label>
-            <input type="text" placeholder="Enter room number" />
-          </div>
-          <button type="button" className="primary-btn">
-            Create Room
-          </button>
-        </form>
+      {showCreate ? (
+        <CreateRoom
+          onRoomCreated={() => {
+            fetchRooms();
+            setShowCreate(false);
+          }}
+        />
       ) : (
-        <div className="edit-section">
+        <>
           <div className="search-bar">
-            <input type="text" placeholder="Search by room number" />
-            <button className="search-btn">Search</button>
+            <input
+              type="text"
+              placeholder="Search by room name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           <ul className="results-list">
-            <li>
-              <span>Room 101 (Floor 1)</span>
-              <div className="actions">
-                <button className="edit-btn">Edit</button>
-                <button className="delete-btn">Delete</button>
-              </div>
-            </li>
+            {filteredRooms.map((room) => (
+              <li key={room.id}>
+                <span>
+                  {room.name} (Capacity: {room.capacity})
+                </span>
+                <div className="actions">
+                  <button
+                    className="edit-btn"
+                    onClick={() => setEditRoom(room)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => setConfirmDeleteId(room.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
-        </div>
+        </>
+      )}
+
+      {editRoom && (
+        <EditRoomModal
+          room={editRoom}
+          onClose={() => setEditRoom(null)}
+          onSave={() => {
+            fetchRooms();
+            setEditRoom(null);
+          }}
+        />
+      )}
+
+      {confirmDeleteId && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this room?"
+          onConfirm={() => handleDeleteRoom(confirmDeleteId)}
+          onCancel={() => setConfirmDeleteId(null)}
+        />
       )}
     </div>
   );

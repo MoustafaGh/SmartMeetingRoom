@@ -2,7 +2,7 @@ import NavItem from './NavItem';
 import './SideBar.css';
 import { useState } from 'react';
 
-function Sidebar({ activePage, setActivePage, onSignOut, notificationCount }) {
+function Sidebar({ activePage, setActivePage, onSignOut, notificationCount, userRole }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleSidebar = () => {
@@ -16,6 +16,7 @@ function Sidebar({ activePage, setActivePage, onSignOut, notificationCount }) {
           <i className="bi bi-list"></i>
         </button>
       </div>
+
       <NavItem PageName="Home" icon="house" isActive={activePage === 'Home'} collapsed={collapsed} onClick={setActivePage} />
       <NavItem PageName="Calendar" icon="calendar" isActive={activePage === 'Calendar'} collapsed={collapsed} onClick={setActivePage} />
       <NavItem
@@ -26,8 +27,11 @@ function Sidebar({ activePage, setActivePage, onSignOut, notificationCount }) {
         onClick={setActivePage}
         badgeCount={notificationCount}
       />
+      <NavItem PageName="Meeting" icon="people" isActive={activePage === 'Meeting'} collapsed={collapsed} onClick={setActivePage} />
       <NavItem PageName="ArchivedClasses" icon="archive" isActive={activePage === 'ArchivedClasses'} collapsed={collapsed} onClick={setActivePage} />
-      <NavItem PageName="EMS" icon="kanban" isActive={activePage === 'EMS'} collapsed={collapsed} onClick={setActivePage} />
+      {userRole === 'Admin' && (
+        <NavItem PageName="EMS" icon="kanban" isActive={activePage === 'EMS'} collapsed={collapsed} onClick={setActivePage} />
+      )}
 
       <div className="sign-out">
         <button onClick={onSignOut} className="sign-out-btn">

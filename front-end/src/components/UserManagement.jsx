@@ -1,120 +1,134 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "../api";
 import "./UserManagement.css";
+import EditUserModal from "./EditUserModal";
+import CreateUser from "./CreateUser";
+import ConfirmationModal from "./ConfirmationModal";
 
 function UserManagement() {
-  const rolesList = ["Admin", "Programmer", "Designer", "IT"];
-  const [mode, setMode] = useState("create");
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreate, setShowCreate] = useState(true);
+  const [editUser, setEditUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    roles: [],
-  });
-
-  const handleRoleChange = (role) => {
-    setFormData((prev) => {
-      const roles = prev.roles.includes(role)
-        ? prev.roles.filter((r) => r !== role)
-        : [...prev.roles, role];
-      return { ...prev, roles };
-    });
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/User");
+      setUsers(res.data);
+    } catch {
+      alert("Failed to load users.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    try {
+      await api.delete(`/User/${userToDelete}`);
+      fetchUsers();
+    } catch {
+      alert("Failed to delete user.");
+    } finally {
+      setShowConfirm(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const filteredUsers = users.filter((u) =>
+    `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="user-management">
       <div className="mode-toggle">
-        <button
-          className={mode === "create" ? "active" : ""}
-          onClick={() => setMode("create")}
-        >
+        <button className={showCreate ? "active" : ""} onClick={() => setShowCreate(true)}>
           Create User
         </button>
-        <button
-          className={mode === "edit" ? "active" : ""}
-          onClick={() => setMode("edit")}
-        >
-          Edit User
+        <button className={!showCreate ? "active" : ""} onClick={() => setShowCreate(false)}>
+          Manage Users
         </button>
       </div>
 
-      {mode === "create" ? (
-        <form className="user-form">
-          <div className="field-row">
-            <div className="field-half">
-              <label>First Name</label>
-              <input
-                type="text"
-                value={formData.firstName}
-                onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
-                }
-              />
-            </div>
-            <div className="field-half">
-              <label>Last Name</label>
-              <input
-                type="text"
-                value={formData.lastName}
-                onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
-                }
-              />
-            </div>
-          </div>
-          <div className="field">
-            <label>Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-          </div>
-          <div className="field">
-            <label>Password</label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-            />
-          </div>
-          <div className="field roles">
-            {rolesList.map((role) => (
-              <label key={role}>
-                <input
-                  type="checkbox"
-                  checked={formData.roles.includes(role)}
-                  onChange={() => handleRoleChange(role)}
-                />
-                {role}
-              </label>
-            ))}
-          </div>
-          <button type="button" className="primary-btn">
-            Create User
-          </button>
-        </form>
+      {showCreate ? (
+        <CreateUser
+          onUserCreated={() => {
+            fetchUsers();
+            setShowCreate(false);
+          }}
+        />
       ) : (
-        <div className="edit-section">
+        <>
           <div className="search-bar">
-            <input type="text" placeholder="Search by username" />
-            <button className="search-btn">Search</button>
+            <input
+              type="text"
+              placeholder="Search by name or email"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-          <ul className="results-list">
-            <li>
-              <span>Example (Example@example.com)</span>
-              <div className="actions">
-                <button className="edit-btn">Edit</button>
-                <button className="delete-btn">Delete</button>
-              </div>
-            </li>
-          </ul>
-        </div>
+
+          {loading ? (
+            <p>Loading users...</p>
+          ) : filteredUsers.length === 0 ? (
+            <p>No users found.</p>
+          ) : (
+            <ul className="results-list">
+              {filteredUsers.map((user) => (
+                <li key={user.id}>
+                  <span>
+                    {user.firstName} {user.lastName} ({user.email})
+                  </span>
+                  <div className="actions">
+                    <button className="edit-btn" onClick={() => setEditUser(user)}>
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => {
+                        setUserToDelete(user.id);
+                        setShowConfirm(true);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+
+      {editUser && (
+        <EditUserModal
+          user={editUser}
+          onClose={() => setEditUser(null)}
+          onSave={() => {
+            fetchUsers();
+            setEditUser(null);
+          }}
+        />
+      )}
+
+      {showConfirm && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this user?"
+          onConfirm={handleDeleteUser}
+          onCancel={() => {
+            setShowConfirm(false);
+            setUserToDelete(null);
+          }}
+        />
       )}
     </div>
   );

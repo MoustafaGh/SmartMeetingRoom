@@ -1,0 +1,31 @@
+.meetings-page {
+  padding: 40px 20px 20px 20px; /* Added extra top padding */
+}
+
+.meetings-header {
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+  margin-bottom: 20px;
+}
+
+.create-meeting-btn {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-meeting-btn:hover {
+  background-color: #125aa0;
+}
+
+.meetings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between meeting cards */
+}

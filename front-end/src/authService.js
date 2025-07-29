@@ -2,17 +2,27 @@ import api from './api';
 
 export const loginUser = async (credentials) => {
   const { data } = await api.post('/User/Login', credentials);
-  return data; // { accessToken, refreshToken }
+  return data;
 };
 
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   const email = localStorage.getItem('email');
   if (!refreshToken || !email) return null;
+
   try {
     const { data } = await api.post('/User/Refresh-Token', { email, refreshToken });
     return data;
   } catch {
     return null;
   }
+};
+
+export const logoutUser = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  const email = localStorage.getItem('email');
+  if (!refreshToken || !email) return;
+
+  await api.post('/User/Logout', { email, refreshToken });
+  localStorage.clear();
 };
