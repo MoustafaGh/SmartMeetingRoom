@@ -23,7 +23,6 @@ namespace SmartMeetingRoomApi.Controllers
             _authService = authService;
         }
 
-        // ✅ Strong password validation method
         private (bool IsValid, string Message) ValidatePassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
@@ -41,7 +40,7 @@ namespace SmartMeetingRoomApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             var users = await _context.Users.Select(u => new UserDto
@@ -59,7 +58,7 @@ namespace SmartMeetingRoomApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetUser(int id)
         {
             var u = await _context.Users.FindAsync(id);

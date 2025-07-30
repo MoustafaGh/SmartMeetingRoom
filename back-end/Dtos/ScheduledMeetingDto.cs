@@ -28,7 +28,8 @@ namespace SmartMeetingRoomApi.Dtos
         public DateTime EndTime { get; set; }
 
         [Required]
-        public int RoomId { get; set; }
+        public string RoomName { get; set; } = string.Empty;
+
         [Required]
         public int UserId { get; set; }
     }
