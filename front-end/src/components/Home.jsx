@@ -16,7 +16,9 @@ function Home({ onLogout, userRole, username }) {
         notificationCount={notificationCount}
         userRole={userRole}
       />
-      <Container activePage={activePage} username={username} />
+      <Container 
+      activePage={activePage} 
+      username={username} />
     </div>
   );
 }

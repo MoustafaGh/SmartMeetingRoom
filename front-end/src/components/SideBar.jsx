@@ -27,7 +27,6 @@ function Sidebar({ activePage, setActivePage, onSignOut, notificationCount, user
         onClick={setActivePage}
         badgeCount={notificationCount}
       />
-      <NavItem PageName="Meeting" icon="people" isActive={activePage === 'Meeting'} collapsed={collapsed} onClick={setActivePage} />
       <NavItem PageName="ArchivedClasses" icon="archive" isActive={activePage === 'ArchivedClasses'} collapsed={collapsed} onClick={setActivePage} />
       {userRole === 'Admin' && (
         <NavItem PageName="EMS" icon="kanban" isActive={activePage === 'EMS'} collapsed={collapsed} onClick={setActivePage} />

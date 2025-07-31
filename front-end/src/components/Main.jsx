@@ -2,11 +2,10 @@ import HomePage from './HomePage';
 import Calendar from './Calendar';
 import Notifications from './Notifications';
 import EMS from './EMS';
-import Meeting from './Meeting';
 import ArchivedClasses from './ArchivedClasses';
 import './Main.css';
 
-function Main({ activePage }) {
+function Main({ activePage,}) {
   return (
     <main className="main">
       {activePage === 'Home' ? (
@@ -17,8 +16,6 @@ function Main({ activePage }) {
         <Notifications />
       ) : activePage === 'EMS' ? (
         <EMS />
-      ) : activePage === 'Meeting' ? (
-        <Meeting />
       ) : activePage === 'ArchivedClasses' ? (
         <ArchivedClasses />
       ) : (

@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
 import MeetingCard from "./MeetingCard";
+import MeetingDetailsModal from "./MeetingDetailsModal";
 import api from "../api";
+import { useEffect, useState } from "react";
 import "./MeetingList.css";
 
 function MeetingList({ userScoped = true }) {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
 
   const fetchMeetings = async () => {
     try {
@@ -31,7 +33,7 @@ function MeetingList({ userScoped = true }) {
   }, []);
 
   if (loading) return <p>Loading meetings...</p>;
-  if (!meetings || meetings.length === 0) return <p>No active meetings scheduled.</p>;
+  if (!meetings.length) return <p>No active meetings scheduled.</p>;
 
   return (
     <div className="meeting-list-grid">
@@ -43,8 +45,14 @@ function MeetingList({ userScoped = true }) {
           description={meeting.description}
           startTime={meeting.startTime}
           endTime={meeting.endTime}
+          onClick={() => setSelectedMeeting(meeting)}
         />
       ))}
+
+      <MeetingDetailsModal
+        meeting={selectedMeeting}
+        onClose={() => setSelectedMeeting(null)}
+      />
     </div>
   );
 }
