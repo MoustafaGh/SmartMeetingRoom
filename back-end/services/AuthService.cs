@@ -71,7 +71,8 @@ namespace SmartMeetingRoomApi.services
             return new TokenResponseDto
             {
                 AccessToken = CreateToken(user),
-                RefreshToken = await GenerateAndSaveRefreshToken(user)
+                RefreshToken = await GenerateAndSaveRefreshToken(user),
+                Id = user.Id
             };
         }
 
@@ -80,7 +81,8 @@ namespace SmartMeetingRoomApi.services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSettings:Token"]));

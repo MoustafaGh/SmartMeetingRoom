@@ -57,13 +57,15 @@ namespace SmartMeetingRoomApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduledMeetingDto>> CreateScheduledMeeting([FromBody] CreateScheduledMeetingDto dto)
         {
-            var roomExists = await _context.Rooms.AnyAsync(r => r.Id == dto.RoomId);
-            if (!roomExists)
-                return BadRequest(new { error = $"Room with ID {dto.RoomId} does not exist." });
+            var userExists = await _context.Users.AnyAsync(u => u.Id == dto.UserId);
+            if (!userExists)
+                return BadRequest(new { error = $"User with ID {dto.UserId} does not exist." });
 
-            // Combine EndTime time with StartTime date
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == dto.RoomName);
+            if (room == null)
+                return BadRequest(new { error = $"Room with name '{dto.RoomName}' does not exist." });
+
             var endDateTime = dto.StartTime.Date.Add(dto.EndTime.TimeOfDay);
-
             if (endDateTime <= dto.StartTime)
                 return BadRequest(new { error = "End time must be after start time." });
 
@@ -73,7 +75,7 @@ namespace SmartMeetingRoomApi.Controllers
                 Description = dto.Description,
                 StartTime = dto.StartTime,
                 EndTime = endDateTime,
-                RoomId = dto.RoomId,
+                RoomId = room.Id,
                 UserId = dto.UserId
             };
 
@@ -87,10 +89,11 @@ namespace SmartMeetingRoomApi.Controllers
                 Description = meeting.Description,
                 StartTime = meeting.StartTime,
                 EndTime = meeting.EndTime,
-                RoomId = meeting.RoomId,
-                UserId = meeting.UserId
+                RoomId = room.Id,
+                UserId = dto.UserId
             });
         }
+
 
 
 
