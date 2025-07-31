@@ -1,62 +1,32 @@
-.HomePage{
+.home-page {
+  padding: 40px 20px 20px 20px;
+}
+
+.Create-Meeting {
   display: flex;
-  padding: 40px;
-  flex: 1; 
-  border-radius: 16px;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-start;
   justify-content: flex-start;
-  gap: 20px;
-}
-.class-card {
-  width: 320px;
-  background-color: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-.class-header {
-  background: linear-gradient(to right, #1976d2, #42a5f5);
-  color: white;
-  padding: 20px;
-  position: relative;
-}
 
-.class-header h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.class-header p {
-  margin: 4px 0 0;
+.create-meeting-btn {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.teacher-img {
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 2px solid white;
+.create-meeting-btn:hover {
+  background-color: #125aa0;
 }
 
-.class-body {
-  padding: 16px;
-  font-size: 14px;
-}
-
-.due {
-  color: gray;
-}
-
-.class-footer {
+.meetings-grid {
   display: flex;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-top: 1px solid #e0e0e0;
-  font-size: 20px;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between meeting cards */
 }

@@ -5,7 +5,12 @@ import Home from './components/Home';
 import { refreshToken } from './authService';
 
 function App() {
-  const [auth, setAuth] = useState({ isAuthenticated: false, role: null, username: "", loading: true });
+  const [auth, setAuth] = useState({
+    isAuthenticated: false,
+    role: null,
+    username: "",
+    loading: true
+  });
 
   useEffect(() => {
     const initAuth = async () => {
@@ -52,9 +57,11 @@ function App() {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('email', email);
+
     const decoded = jwtDecode(accessToken);
     const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || decoded.role;
     const username = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || decoded.name;
+
     setAuth({ isAuthenticated: true, role, username, loading: false });
   };
 
@@ -63,14 +70,16 @@ function App() {
     setAuth({ isAuthenticated: false, role: null, username: "", loading: false });
   };
 
-  if (auth.loading) {
-    return <div>Loading...</div>;
-  }
+  if (auth.loading) return <div>Loading...</div>;
 
-  return !auth.isAuthenticated ? (
-    <Login onLogin={handleLogin} />
+  return auth.isAuthenticated ? (
+    <Home
+      onLogout={handleLogout}
+      userRole={auth.role}
+      username={auth.username}
+    />
   ) : (
-    <Home onLogout={handleLogout} userRole={auth.role} username={auth.username} />
+    <Login onLogin={handleLogin} />
   );
 }
 

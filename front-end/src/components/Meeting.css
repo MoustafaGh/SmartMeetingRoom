@@ -1,10 +1,10 @@
 .meetings-page {
-  padding: 40px 20px 20px 20px; /* Added extra top padding */
+  padding: 40px 20px 20px 20px; 
 }
 
 .meetings-header {
   display: flex;
-  justify-content: flex-end; /* Align button to the right */
+  justify-content: flex-end;
   margin-bottom: 20px;
 }
 

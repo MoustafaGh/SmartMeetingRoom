@@ -37,52 +37,61 @@ function CreateMeetingModal({ onClose, onCreate }) {
   }, []);
 
   const handleCreate = async () => {
-    if (!formData.title || !formData.startTime || !formData.endTime || !formData.roomName) {
-  setError("Title, Start Time, End Time, and Room are required");
-  return;
-}
+  const { title, description, startTime, endTime, roomName } = formData;
 
-    try {
-      const start = new Date(formData.startTime);
-      const [endHour, endMinute] = formData.endTime.split(":");
-      const end = new Date(start);
-      end.setHours(endHour, endMinute);
+  if (!title || !startTime || !endTime || !roomName) {
+    setError("Title, Start Time, End Time, and Room are required");
+    return;
+  }
 
-      if (end <= start) {
-        setError("End time must be after start time");
-        return;
-      }
+  try {
+    // Combine date part of startTime with just time from endTime
+    const startDate = new Date(startTime);
+    const endDate = new Date(`${startTime.split("T")[0]}T${endTime}`);
 
-      const res = await api.post("/ScheduledMeeting", {
-        title: formData.title,
-        description: formData.description,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
-        roomName: formData.roomName,
-        userId: parseInt(localStorage.getItem("userId")),
-      });
-
-      const meetingId = res.data.id;
-
-      await Promise.all(
-        selectedUsers.map(user =>
-          api.post("/MeetingAttendee", {
-            scheduledMeetingId: meetingId,
-            userId: user.id
-          })
-        )
-      );
-
-      onCreate();
-    } catch (err) {
-      console.error("Error creating meeting:", err);
-      if (err.response?.data?.error) {
-        setError(err.response.data.error);
-      } else {
-        setError("Failed to create meeting");
-      }
+    if (endDate <= startDate) {
+      setError("End time must be after start time");
+      return;
     }
-  };
+
+    // Format as ISO string **without** converting to UTC
+    const formattedStart = `${startTime}:00`; // e.g. "2025-07-29T14:30:00"
+    const formattedEnd = `${startTime.split("T")[0]}T${endTime}:00`; // e.g. "2025-07-29T15:30:00"
+
+    const res = await api.post("/ScheduledMeeting", {
+      title,
+      description,
+      startTime: formattedStart,
+      endTime: formattedEnd,
+      roomName,
+      userId: parseInt(localStorage.getItem("userId")),
+    });
+
+    const meetingId = res.data.id;
+
+    await Promise.all(
+      selectedUsers.map(user =>
+        api.post("/MeetingAttendee", {
+          scheduledMeetingId: meetingId,
+          userId: user.id
+        })
+      )
+    );
+
+    onCreate();
+  } catch (err) {
+    console.error("Error creating meeting:", err);
+    if (err.response?.data?.error) {
+      setError(err.response.data.error);
+    } else if (err.response?.data) {
+      setError(JSON.stringify(err.response.data));
+    } else {
+      setError("Failed to create meeting");
+    }
+  }
+};
+
+
 
   const filteredSuggestions =
     search.trim() === ""
