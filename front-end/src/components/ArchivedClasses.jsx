@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import MeetingCard from "./MeetingCard";
+import MeetingDetailsModal from "./MeetingDetailsModal"; // ✅ import the modal
 import "./ArchivedClasses.css";
 
 function ArchivedClasses() {
   const [archivedMeetings, setArchivedMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMeeting, setSelectedMeeting] = useState(null); // ✅ track selected meeting
 
   const fetchArchivedMeetings = async () => {
     try {
@@ -37,13 +39,23 @@ function ArchivedClasses() {
           {archivedMeetings.map((meeting) => (
             <MeetingCard
               key={meeting.id}
+              id={meeting.id}
               title={meeting.title}
               description={meeting.description}
               startTime={meeting.startTime}
               endTime={meeting.endTime}
+              onClick={() => setSelectedMeeting(meeting)} // ✅ open modal
             />
           ))}
         </div>
+      )}
+
+      {/* ✅ show the modal if a meeting is selected */}
+      {selectedMeeting && (
+        <MeetingDetailsModal
+          meeting={selectedMeeting}
+          onClose={() => setSelectedMeeting(null)}
+        />
       )}
     </div>
   );

@@ -10,23 +10,38 @@ function MeetingList({ userScoped = true }) {
   const [selectedMeeting, setSelectedMeeting] = useState(null);
 
   const fetchMeetings = async () => {
-    try {
-      const res = await api.get("/ScheduledMeeting");
-      const now = new Date();
-      let filtered = res.data.filter(m => new Date(m.endTime) >= now);
+  try {
+    const [meetingRes, attendeeRes] = await Promise.all([
+      api.get("/ScheduledMeeting"),
+      api.get("/MeetingAttendee"),
+    ]);
 
-      if (userScoped) {
-        const userId = parseInt(localStorage.getItem("userId"));
-        filtered = filtered.filter(m => m.userId === userId);
-      }
+    const allMeetings = meetingRes.data;
+    const attendees = attendeeRes.data;
+    const userId = parseInt(localStorage.getItem("userId"));
+    const now = new Date();
 
-      setMeetings(filtered);
-    } catch (err) {
-      console.error("Failed to fetch meetings:", err);
-    } finally {
-      setLoading(false);
+    let filtered = allMeetings.filter(m => new Date(m.endTime) >= now);
+
+    if (userScoped) {
+      const createdByUser = filtered.filter(m => m.userId === userId);
+      const invitedMeetingIds = attendees
+        .filter(a => a.userId === userId)
+        .map(a => a.scheduledMeetingId);
+
+      const invitedTo = filtered.filter(m => invitedMeetingIds.includes(m.id));
+
+      filtered = [...new Map([...createdByUser, ...invitedTo].map(m => [m.id, m])).values()];
     }
-  };
+
+    setMeetings(filtered);
+  } catch (err) {
+    console.error("Failed to fetch meetings:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchMeetings();

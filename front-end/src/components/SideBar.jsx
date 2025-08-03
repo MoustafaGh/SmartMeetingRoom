@@ -1,13 +1,30 @@
 import NavItem from './NavItem';
 import './SideBar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../api';
 
-function Sidebar({ activePage, setActivePage, onSignOut, notificationCount, userRole }) {
+function Sidebar({ activePage, setActivePage, onSignOut, userRole }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const userId = parseInt(localStorage.getItem("userId"));
+        const res = await api.get(`/Notification/user/${userId}`);
+        const unread = res.data.filter(n => !n.isRead);
+        setNotificationCount(unread.length);
+      } catch (err) {
+        console.error("Failed to fetch notifications", err);
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
