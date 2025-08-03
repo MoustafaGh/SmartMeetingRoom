@@ -15,7 +15,7 @@ function Login({ onLogin }) {
     setError('');
 
     try {
-      const result = await loginUser(form); // { accessToken, refreshToken }
+      const result = await loginUser(form); //  accessToken, refreshToken 
       onLogin({ ...result, email: form.email });
     } catch {
       setError('Invalid email or password.');

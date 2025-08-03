@@ -45,14 +45,14 @@ function EditUserModal({ user, onClose, onSave }) {
       setBackendError("");
       setShowConfirm(false);
       onSave();
-      onClose(); // ✅ Close Edit Modal after success
+      onClose();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.error) {
         setBackendError(err.response.data.error);
       } else {
         setBackendError("Failed to update user.");
       }
-      setShowConfirm(false); // ✅ Close confirmation if error occurs
+      setShowConfirm(false);
     }
   };
 

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import MeetingCard from "./MeetingCard";
-import MeetingDetailsModal from "./MeetingDetailsModal"; // ✅ import the modal
-import "./ArchivedClasses.css";
+import MeetingDetailsModal from "./MeetingDetailsModal";
+import "./ArchivedMeeting.css";
 
-function ArchivedClasses() {
+function ArchivedMeeting() {
   const [archivedMeetings, setArchivedMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMeeting, setSelectedMeeting] = useState(null); // ✅ track selected meeting
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
 
   const fetchArchivedMeetings = async () => {
     try {
@@ -29,7 +29,7 @@ function ArchivedClasses() {
   }, []);
 
   return (
-    <div className="archived-classes-page">
+    <div className="archived-meetings-page">
       {loading ? (
         <p>Loading...</p>
       ) : archivedMeetings.length === 0 ? (
@@ -44,13 +44,13 @@ function ArchivedClasses() {
               description={meeting.description}
               startTime={meeting.startTime}
               endTime={meeting.endTime}
-              onClick={() => setSelectedMeeting(meeting)} // ✅ open modal
+              onClick={() => setSelectedMeeting(meeting)}
             />
           ))}
         </div>
       )}
 
-      {/* ✅ show the modal if a meeting is selected */}
+      
       {selectedMeeting && (
         <MeetingDetailsModal
           meeting={selectedMeeting}
@@ -61,4 +61,4 @@ function ArchivedClasses() {
   );
 }
 
-export default ArchivedClasses;
+export default ArchivedMeeting;

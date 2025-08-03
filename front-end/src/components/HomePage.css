@@ -28,5 +28,5 @@
 .meetings-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Space between meeting cards */
+  gap: 20px;
 }
