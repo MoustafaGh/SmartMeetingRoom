@@ -15,18 +15,18 @@ namespace SmartMeetingRoomApi.Models
 
 
         [JsonIgnore]
-        public MoM? MoMs { get; set; } // Navigation property to MoM
+        public ICollection<MoM>? MoMs { get; set; }
 
         [JsonIgnore]
-        public Room? Room { get; set; } // Navigation property to Room 
+        public Room? Room { get; set; }
 
         [JsonIgnore]
-        public User? User { get; set; } // Navigation property to User who scheduled the meeting
+        public User? User { get; set; }
 
         [JsonIgnore]
-        public ICollection<MeetingAttendee>? MeetingAttendees { get; set; } // Navigation property to MeetingAttendee
+        public ICollection<MeetingAttendee>? MeetingAttendees { get; set; }
 
         [JsonIgnore]
-        public ICollection<Notification>? Notifications { get; set; } // Navigation property to Notification
+        public ICollection<Notification>? Notifications { get; set; }
     }
 }

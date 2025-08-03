@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartMeetingRoomApi.Data;
 
@@ -11,9 +12,11 @@ using SmartMeetingRoomApi.Data;
 namespace SmartMeetingRoomApi.Migrations
 {
     [DbContext(typeof(SmartMeetingRoomApiDbContext))]
-    partial class SmartMeetingRoomApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250802091103_RemoveSummaryAndNotesFromMoM")]
+    partial class RemoveSummaryAndNotesFromMoM
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,8 @@ namespace SmartMeetingRoomApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduledMeetingId");
+                    b.HasIndex("ScheduledMeetingId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -234,8 +238,8 @@ namespace SmartMeetingRoomApi.Migrations
             modelBuilder.Entity("SmartMeetingRoomApi.Models.MoM", b =>
                 {
                     b.HasOne("SmartMeetingRoomApi.Models.ScheduledMeeting", "ScheduledMeeting")
-                        .WithMany("MoMs")
-                        .HasForeignKey("ScheduledMeetingId")
+                        .WithOne("MoMs")
+                        .HasForeignKey("SmartMeetingRoomApi.Models.MoM", "ScheduledMeetingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

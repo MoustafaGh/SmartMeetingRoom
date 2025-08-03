@@ -98,5 +98,24 @@ namespace SmartMeetingRoomApi.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<List<NotificationDto>>> GetByUserId(int userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId)
+                .Select(n => new NotificationDto
+                {
+                    Id = n.Id,
+                    ScheduledMeetingId = n.ScheduledMeetingId,
+                    UserId = n.UserId,
+                    Message = n.Message,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }).ToListAsync();
+
+            return Ok(notifications);
+        }
+
     }
 }

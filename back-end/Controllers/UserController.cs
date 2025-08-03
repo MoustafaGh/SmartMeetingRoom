@@ -56,7 +56,7 @@ namespace SmartMeetingRoomApi.Controllers
 
             return Ok(users);
         }
-
+        
         [HttpGet("{id}")]
         //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetUser(int id)
