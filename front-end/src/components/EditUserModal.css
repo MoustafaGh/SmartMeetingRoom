@@ -34,7 +34,6 @@
   flex-direction: column;
 }
 
-/* Two-column row for First & Last Name */
 .edit-user-field-row {
   display: flex;
   gap: 20px;
@@ -60,7 +59,6 @@
   font-weight: 500;
 }
 
-/* Inputs */
 .edit-user-field input,
 .edit-user-field-half input {
   width: 100%;
@@ -71,7 +69,6 @@
   box-sizing: border-box;
 }
 
-/* Password Container */
 .password-container {
   position: relative;
   display: flex;
@@ -106,7 +103,6 @@
   color: #1976d2;
 }
 
-/* Password Conditions Box */
 .password-conditions-box {
   background-color: #fff8dc;
   border: 1px solid #f1c40f;
@@ -137,12 +133,10 @@
   margin-top: 5px;
 }
 
-/* Checkbox */
 .edit-user-checkbox {
   margin-bottom: 15px;
 }
 
-/* Backend Error Box */
 .backend-error-box {
   background-color: #fdecea;
   color: #b71c1c;
@@ -155,7 +149,6 @@
   font-weight: bold;
 }
 
-/* Buttons */
 .edit-user-modal-actions {
   display: flex;
   justify-content: flex-end;

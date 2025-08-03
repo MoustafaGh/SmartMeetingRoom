@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-/* Header */
 .calendar-header {
   display: flex;
   align-items: center;
@@ -36,7 +35,6 @@
   background-color: #0056b3;
 }
 
-/* Week grid */
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -45,7 +43,7 @@
   flex: 1;
 }
 
-/* Day columns */
+
 .day-column {
   flex: 1;
   background-color: #f9f9f9;
@@ -80,7 +78,6 @@
   margin-top: 16px;
 }
 
-/* Responsive fallback */
 @media (max-width: 768px) {
   .week {
     grid-template-columns: 1fr;

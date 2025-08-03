@@ -4,7 +4,7 @@ export const loginUser = async (credentials) => {
   const { data } = await api.post('/User/Login', credentials);
   localStorage.setItem('accessToken', data.accessToken);
   localStorage.setItem('refreshToken', data.refreshToken);
-  localStorage.setItem('userId', data.id); // store user ID securely
+  localStorage.setItem('userId', data.id);
   return data;
 };
 

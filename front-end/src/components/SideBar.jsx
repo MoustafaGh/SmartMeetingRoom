@@ -34,8 +34,18 @@ function Sidebar({ activePage, setActivePage, onSignOut, userRole }) {
         </button>
       </div>
 
-      <NavItem PageName="Home" icon="house" isActive={activePage === 'Home'} collapsed={collapsed} onClick={setActivePage} />
-      <NavItem PageName="Calendar" icon="calendar" isActive={activePage === 'Calendar'} collapsed={collapsed} onClick={setActivePage} />
+      <NavItem 
+      PageName="Home" 
+      icon="house" 
+      isActive={activePage === 'Home'} 
+      collapsed={collapsed} 
+      onClick={setActivePage} />
+      <NavItem 
+      PageName="Calendar" 
+      icon="calendar" 
+      isActive={activePage === 'Calendar'} 
+      collapsed={collapsed} 
+      onClick={setActivePage} />
       <NavItem
         PageName="Notifications"
         icon="bell"
@@ -44,9 +54,19 @@ function Sidebar({ activePage, setActivePage, onSignOut, userRole }) {
         onClick={setActivePage}
         badgeCount={notificationCount}
       />
-      <NavItem PageName="ArchivedClasses" icon="archive" isActive={activePage === 'ArchivedClasses'} collapsed={collapsed} onClick={setActivePage} />
+      <NavItem 
+      PageName="ArchivedMeeting" 
+      icon="archive" 
+      isActive={activePage === 'ArchivedMeeting'} 
+      collapsed={collapsed} 
+      onClick={setActivePage} />
       {userRole === 'Admin' && (
-        <NavItem PageName="EMS" icon="kanban" isActive={activePage === 'EMS'} collapsed={collapsed} onClick={setActivePage} />
+        <NavItem 
+        PageName="EMS" 
+        icon="kanban"
+         isActive={activePage === 'EMS'}
+          collapsed={collapsed}
+           onClick={setActivePage} />
       )}
 
       <div className="sign-out">

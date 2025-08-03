@@ -2,7 +2,7 @@ import HomePage from './HomePage';
 import Calendar from './Calendar';
 import Notifications from './Notifications';
 import EMS from './EMS';
-import ArchivedClasses from './ArchivedClasses';
+import ArchivedClasses from './ArchivedMeeting';
 import './Main.css';
 
 function Main({ activePage,}) {
@@ -16,7 +16,7 @@ function Main({ activePage,}) {
         <Notifications />
       ) : activePage === 'EMS' ? (
         <EMS />
-      ) : activePage === 'ArchivedClasses' ? (
+      ) : activePage === 'ArchivedMeeting' ? (
         <ArchivedClasses />
       ) : (
         <div style={{ padding: '20px' }}>This page doesn't exist yet.</div>
