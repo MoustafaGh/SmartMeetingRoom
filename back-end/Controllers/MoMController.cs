@@ -11,10 +11,12 @@ namespace SmartMeetingRoomApi.Controllers
     public class MoMController : ControllerBase
     {
         private readonly SmartMeetingRoomApiDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public MoMController(SmartMeetingRoomApiDbContext context)
+        public MoMController(SmartMeetingRoomApiDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet]
@@ -26,8 +28,7 @@ namespace SmartMeetingRoomApi.Controllers
                     Id = m.Id,
                     ScheduledMeetingId = m.ScheduledMeetingId,
                     UserId = m.UserId,
-                    Summary = m.Summary,
-                    Notes = m.Notes,
+                    FilePath = m.FilePath,
                     CreatedAt = m.CreatedAt
                 }).ToListAsync();
 
@@ -45,21 +46,34 @@ namespace SmartMeetingRoomApi.Controllers
                 Id = mom.Id,
                 ScheduledMeetingId = mom.ScheduledMeetingId,
                 UserId = mom.UserId,
-                Summary = mom.Summary,
-                Notes = mom.Notes,
+                FilePath = mom.FilePath,
                 CreatedAt = mom.CreatedAt
             });
         }
 
         [HttpPost]
-        public async Task<ActionResult<MoMDto>> Create(CreateMoMDto dto)
+        public async Task<ActionResult<MoMDto>> Create([FromForm] CreateMoMDto dto)
         {
+            if (dto.File == null || dto.File.Length == 0)
+                return BadRequest("No file provided");
+
+            var uploadsFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "UploadedFiles");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = $"{Guid.NewGuid()}_{dto.File.FileName}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.File.CopyToAsync(stream);
+            }
+
             var mom = new MoM
             {
                 ScheduledMeetingId = dto.ScheduledMeetingId,
                 UserId = dto.UserId,
-                Summary = dto.Summary,
-                Notes = dto.Notes,
+                FilePath = fileName,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -71,22 +85,40 @@ namespace SmartMeetingRoomApi.Controllers
                 Id = mom.Id,
                 ScheduledMeetingId = mom.ScheduledMeetingId,
                 UserId = mom.UserId,
-                Summary = mom.Summary,
-                Notes = mom.Notes,
+                FilePath = mom.FilePath,
                 CreatedAt = mom.CreatedAt
             });
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateMoMDto dto)
+        [HttpPut("{id}/file")]
+        public async Task<IActionResult> UpdateFile(int id, [FromForm] UpdateMoMFileDto dto)
         {
             var mom = await _context.MoMs.FindAsync(id);
             if (mom == null) return NotFound();
 
-            mom.Summary = dto.Summary ?? mom.Summary;
-            mom.Notes = dto.Notes ?? mom.Notes;
+            
+            if (!string.IsNullOrEmpty(mom.FilePath))
+            {
+                var oldPath = Path.Combine(_env.WebRootPath ?? "wwwroot", "UploadedFiles", mom.FilePath);
+                if (System.IO.File.Exists(oldPath))
+                    System.IO.File.Delete(oldPath);
+            }
 
+            
+            var fileName = $"{Guid.NewGuid()}_{dto.File.FileName}";
+            var uploadsFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "UploadedFiles");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var newPath = Path.Combine(uploadsFolder, fileName);
+            using (var stream = new FileStream(newPath, FileMode.Create))
+            {
+                await dto.File.CopyToAsync(stream);
+            }
+
+            mom.FilePath = fileName;
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -95,6 +127,13 @@ namespace SmartMeetingRoomApi.Controllers
         {
             var mom = await _context.MoMs.FindAsync(id);
             if (mom == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(mom.FilePath))
+            {
+                var filePath = Path.Combine(_env.WebRootPath ?? "wwwroot", "UploadedFiles", mom.FilePath);
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+            }
 
             _context.MoMs.Remove(mom);
             await _context.SaveChangesAsync();

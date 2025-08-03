@@ -5,16 +5,17 @@ namespace SmartMeetingRoomApi.Models
     public class MoM
     {
         public int Id { get; set; }
-        public int ScheduledMeetingId { get; set; } // Foreign key to ScheduledMeeting
-        public int UserId { get; set; } // User who created the MoM , FK fom User table
-        public string? Summary { get; set; }
-        public string? Notes { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Default to current time
+        public int ScheduledMeetingId { get; set; }
+        public int UserId { get; set; }
+        public string? FilePath { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]
-        public User? User { get; set; } // Navigation property to User who created the MoM
+        public User? User { get; set; }
 
         [JsonIgnore]
-        public ScheduledMeeting? ScheduledMeeting { get; set; } // Navigation property to ScheduledMeeting
+        public ScheduledMeeting? ScheduledMeeting { get; set; }
     }
+
 }

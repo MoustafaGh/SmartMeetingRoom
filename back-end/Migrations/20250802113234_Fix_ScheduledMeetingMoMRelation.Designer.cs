@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartMeetingRoomApi.Data;
 
@@ -11,9 +12,11 @@ using SmartMeetingRoomApi.Data;
 namespace SmartMeetingRoomApi.Migrations
 {
     [DbContext(typeof(SmartMeetingRoomApiDbContext))]
-    partial class SmartMeetingRoomApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250802113234_Fix_ScheduledMeetingMoMRelation")]
+    partial class Fix_ScheduledMeetingMoMRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

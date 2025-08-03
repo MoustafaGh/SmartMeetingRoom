@@ -51,7 +51,6 @@ namespace SmartMeetingRoomApi.Controllers
                 RoomId = m.RoomId,
                 UserId = m.UserId
             });
-            //return Ok(m);
         }
 
         [HttpPost]
@@ -69,6 +68,38 @@ namespace SmartMeetingRoomApi.Controllers
             if (endDateTime <= dto.StartTime)
                 return BadRequest(new { error = "End time must be after start time." });
 
+            bool roomConflict = await _context.ScheduledMeetings.AnyAsync(m =>
+                m.RoomId == room.Id &&
+                m.StartTime < endDateTime &&
+                m.EndTime > dto.StartTime);
+
+            if (roomConflict)
+                return BadRequest(new { error = "This room is already booked during the selected time range." });
+
+            bool creatorConflict = await _context.ScheduledMeetings.AnyAsync(m =>
+                m.UserId == dto.UserId &&
+                m.StartTime < endDateTime &&
+                m.EndTime > dto.StartTime);
+
+            if (creatorConflict)
+                return BadRequest(new { error = "You already have a meeting during the selected time." });
+
+            if (dto.InvitedUserIds is { Count: > 0 })
+            {
+                foreach (var invitedUserId in dto.InvitedUserIds)
+                {
+                    bool invitedConflict = await _context.MeetingAttendees
+                        .Include(ma => ma.ScheduledMeeting)
+                        .AnyAsync(ma =>
+                            ma.UserId == invitedUserId &&
+                            ma.ScheduledMeeting!.StartTime < endDateTime &&
+                            ma.ScheduledMeeting.EndTime > dto.StartTime);
+
+                    if (invitedConflict)
+                        return BadRequest(new { error = $"User ID {invitedUserId} has a time conflict with another meeting." });
+                }
+            }
+
             var meeting = new ScheduledMeeting
             {
                 Title = dto.Title,
@@ -81,6 +112,33 @@ namespace SmartMeetingRoomApi.Controllers
 
             _context.ScheduledMeetings.Add(meeting);
             await _context.SaveChangesAsync();
+
+            if (dto.InvitedUserIds is { Count: > 0 })
+            {
+                foreach (var invitedUserId in dto.InvitedUserIds)
+                {
+                    if (invitedUserId == dto.UserId) continue;
+
+                    _context.MeetingAttendees.Add(new MeetingAttendee
+                    {
+                        UserId = invitedUserId,
+                        ScheduledMeetingId = meeting.Id,
+                    });
+
+                    _context.Notifications.Add(new Notification
+                    {
+                        ScheduledMeetingId = meeting.Id,
+                        UserId = invitedUserId,
+                        Message = $"You have been invited to: {dto.Title}",
+                        CreatedAt = DateTime.UtcNow,
+                        IsRead = false
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+
 
             return CreatedAtAction(nameof(GetScheduledMeeting), new { id = meeting.Id }, new ScheduledMeetingDto
             {
@@ -99,6 +157,8 @@ namespace SmartMeetingRoomApi.Controllers
 
 
 
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateScheduledMeeting(int id, UpdateScheduledMeetingDto dto)
         {
@@ -111,6 +171,22 @@ namespace SmartMeetingRoomApi.Controllers
             if (dto.EndTime.HasValue) meeting.EndTime = dto.EndTime.Value;
             if (dto.RoomId.HasValue) meeting.RoomId = dto.RoomId.Value;
 
+            var attendees = await _context.MeetingAttendees
+                .Where(a => a.ScheduledMeetingId == id)
+                .ToListAsync();
+
+            foreach (var attendee in attendees)
+            {
+                _context.Notifications.Add(new Notification
+                {
+                    ScheduledMeetingId = id,
+                    UserId = attendee.UserId,
+                    Message = $"Meeting '{meeting.Title}' has been updated.",
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false
+                });
+            }
+
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -120,6 +196,22 @@ namespace SmartMeetingRoomApi.Controllers
         {
             var meeting = await _context.ScheduledMeetings.FindAsync(id);
             if (meeting == null) return NotFound();
+
+            var attendees = await _context.MeetingAttendees
+                .Where(a => a.ScheduledMeetingId == id)
+                .ToListAsync();
+
+            foreach (var attendee in attendees)
+            {
+                _context.Notifications.Add(new Notification
+                {
+                    ScheduledMeetingId = id,
+                    UserId = attendee.UserId,
+                    Message = $"Meeting '{meeting.Title}' has been canceled.",
+                    CreatedAt = DateTime.UtcNow,
+                    IsRead = false
+                });
+            }
 
             _context.ScheduledMeetings.Remove(meeting);
             await _context.SaveChangesAsync();

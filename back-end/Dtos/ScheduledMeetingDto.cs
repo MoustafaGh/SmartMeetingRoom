@@ -32,7 +32,10 @@ namespace SmartMeetingRoomApi.Dtos
 
         [Required]
         public int UserId { get; set; }
+
+        public List<int> InvitedUserIds { get; set; } = new();
     }
+
 
 
     public class UpdateScheduledMeetingDto
