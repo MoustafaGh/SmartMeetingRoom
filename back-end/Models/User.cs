@@ -10,7 +10,7 @@ namespace SmartMeetingRoomApi.Models
         public string? UserName { get; set; } 
         public string? Email { get; set; }
         public string? PasswordHash { get; set; } 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Default to current time
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; } = true; 
         public string? Role { get; set; }
         public string? RefreshToken { get; set; } 
@@ -27,6 +27,6 @@ namespace SmartMeetingRoomApi.Models
         public ICollection<MoM>? MoMs { get; set; }
 
         [JsonIgnore]
-        public ICollection<MeetingAttendee>? MeetingAttendees { get; set; } // Navigation property to MeetingAttendee
+        public ICollection<MeetingAttendee>? MeetingAttendees { get; set; }
     }
 }

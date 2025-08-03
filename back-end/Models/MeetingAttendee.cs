@@ -5,14 +5,14 @@ namespace SmartMeetingRoomApi.Models
     public class MeetingAttendee
     {
         public int Id { get; set; }
-        public bool Status { get; set; } = false; // Default value is false
-        public int ScheduledMeetingId { get; set; } // Foreign key to ScheduledMeeting
-        public int UserId { get; set; } // Foreign key to User
+        public bool Status { get; set; } = false;
+        public int ScheduledMeetingId { get; set; }
+        public int UserId { get; set; }
 
         [JsonIgnore]
-        public ScheduledMeeting? ScheduledMeeting { get; set; } // Navigation property to ScheduledMeeting
+        public ScheduledMeeting? ScheduledMeeting { get; set; }
 
         [JsonIgnore]
-        public User? Users { get; set; } // Navigation property to User
+        public User? Users { get; set; }
     }
 }

@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public int ScheduledMeetingId { get; set; }
         public int UserId { get; set; }
-        public string? FilePath { get; set; } // ✅ New
+        public string? FilePath { get; set; } 
         public DateTime CreatedAt { get; set; }
     }
 
