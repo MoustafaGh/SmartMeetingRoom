@@ -1,5 +1,5 @@
 .sidebar {
-  background-color: #F8FAFC;
+  background-color: #f8fafc;
   padding: 20px 12px;
   display: flex;
   flex-direction: column;
@@ -7,17 +7,16 @@
   gap: 20px;
   white-space: nowrap;
   overflow: hidden;
-  max-width: 15%;
+  width: 15%;
   box-sizing: border-box;
-  transition: width 0.4s ease-in-out, padding 0.4s ease-in-out;
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
 }
 
 .sidebar.collapsed {
-  /* max-width: 5%; */
+  width: 5%;
   padding: 20px 8px;
   align-items: center;
 }
-
 
 .nav-btn {
   background-color: #fff;
@@ -37,37 +36,8 @@
   background-color: #f0f0f0;
 }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #555;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  transition: all 0.3s ease-in-out;
-}
-
-.sidebar.collapsed .nav-item span:not(.icon) {
-  display: none;
-}
-
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-  padding: 10px 0;
-}
-
-.nav-item.active {
-  background-color: #e3f2fd;
-  color: #0d47a1;
-}
-
-.icon i {
-  font-size: 22px;
-}
 .sign-out {
-  margin-top: auto; /* Push to bottom */
+  margin-top: auto;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -91,19 +61,4 @@
 
 .sign-out-btn:hover {
   background-color: #c0392b;
-}
-.icon {
-  position: relative;
-}
-
-.sidebar-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background-color: #e74c3c;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 10px;
-  font-weight: bold;
 }

@@ -3,6 +3,8 @@ import api from "../api";
 import "./CreateMeetingModal.css";
 
 function CreateMeetingModal({ onClose, onCreate }) {
+  const currentUserId = parseInt(localStorage.getItem("userId"));
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -23,7 +25,7 @@ function CreateMeetingModal({ onClose, onCreate }) {
       try {
         const [roomRes, userRes] = await Promise.all([
           api.get("/Room"),
-          api.get("/User")
+          api.get("/User"),
         ]);
         setRooms(roomRes.data);
         setUsers(userRes.data);
@@ -37,41 +39,34 @@ function CreateMeetingModal({ onClose, onCreate }) {
   }, []);
 
   const handleCreate = async () => {
-    if (!formData.title || !formData.startTime || !formData.endTime || !formData.roomName) {
-  setError("Title, Start Time, End Time, and Room are required");
-  return;
-}
+    const { title, description, startTime, endTime, roomName } = formData;
+
+    if (!title || !startTime || !endTime || !roomName) {
+      setError("Title, Start Time, End Time, and Room are required");
+      return;
+    }
+
+    const startDate = new Date(startTime);
+    const endDate = new Date(`${startTime.split("T")[0]}T${endTime}`);
+
+    if (endDate <= startDate) {
+      setError("End time must be after start time");
+      return;
+    }
+
+    const formattedStart = `${startTime}:00`;
+    const formattedEnd = `${startTime.split("T")[0]}T${endTime}:00`;
 
     try {
-      const start = new Date(formData.startTime);
-      const [endHour, endMinute] = formData.endTime.split(":");
-      const end = new Date(start);
-      end.setHours(endHour, endMinute);
-
-      if (end <= start) {
-        setError("End time must be after start time");
-        return;
-      }
-
       const res = await api.post("/ScheduledMeeting", {
-        title: formData.title,
-        description: formData.description,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
-        roomName: formData.roomName,
-        userId: parseInt(localStorage.getItem("userId")),
+        title,
+        description,
+        startTime: formattedStart,
+        endTime: formattedEnd,
+        roomName,
+        userId: currentUserId,
+        invitedUserIds: selectedUsers.map((u) => u.id),
       });
-
-      const meetingId = res.data.id;
-
-      await Promise.all(
-        selectedUsers.map(user =>
-          api.post("/MeetingAttendee", {
-            scheduledMeetingId: meetingId,
-            userId: user.id
-          })
-        )
-      );
 
       onCreate();
     } catch (err) {
@@ -87,12 +82,16 @@ function CreateMeetingModal({ onClose, onCreate }) {
   const filteredSuggestions =
     search.trim() === ""
       ? []
-      : users.filter(u =>
-          (u.firstName + " " + u.lastName)
-            .toLowerCase()
-            .includes(search.toLowerCase()) &&
-          !selectedUsers.find(s => s.id === u.id)
-        ).slice(0, 5);
+      : users
+          .filter(
+            (u) =>
+              u.id !== currentUserId &&
+              !selectedUsers.find((s) => s.id === u.id) &&
+              `${u.firstName} ${u.lastName}`
+                .toLowerCase()
+                .includes(search.toLowerCase())
+          )
+          .slice(0, 5);
 
   return (
     <div className="create-meeting-overlay">
@@ -104,7 +103,9 @@ function CreateMeetingModal({ onClose, onCreate }) {
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
           />
         </div>
 
@@ -112,7 +113,9 @@ function CreateMeetingModal({ onClose, onCreate }) {
           <label>Description</label>
           <textarea
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
           />
         </div>
 
@@ -121,7 +124,9 @@ function CreateMeetingModal({ onClose, onCreate }) {
           <input
             type="datetime-local"
             value={formData.startTime}
-            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, startTime: e.target.value })
+            }
           />
         </div>
 
@@ -130,7 +135,9 @@ function CreateMeetingModal({ onClose, onCreate }) {
           <input
             type="time"
             value={formData.endTime}
-            onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, endTime: e.target.value })
+            }
           />
         </div>
 
@@ -141,7 +148,9 @@ function CreateMeetingModal({ onClose, onCreate }) {
           ) : (
             <select
               value={formData.roomName}
-              onChange={(e) => setFormData({ ...formData, roomName: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, roomName: e.target.value })
+              }
             >
               <option value="">Select a Room</option>
               {rooms.map((room) => (
@@ -163,11 +172,14 @@ function CreateMeetingModal({ onClose, onCreate }) {
           />
           {filteredSuggestions.length > 0 && (
             <div className="user-suggestion-list">
-              {filteredSuggestions.map(user => (
+              {filteredSuggestions.map((user) => (
                 <div
                   key={user.id}
                   className="user-suggestion-item"
-                  onClick={() => setSelectedUsers([...selectedUsers, user])}
+                  onClick={() => {
+                    setSelectedUsers([...selectedUsers, user]);
+                    setSearch("");
+                  }}
                 >
                   {user.firstName} {user.lastName} — {user.role}
                 </div>
@@ -176,10 +188,18 @@ function CreateMeetingModal({ onClose, onCreate }) {
           )}
           {selectedUsers.length > 0 && (
             <div className="selected-users">
-              {selectedUsers.map(u => (
+              {selectedUsers.map((u) => (
                 <span key={u.id} className="selected-user">
                   {u.firstName} {u.lastName}
-                  <button onClick={() => setSelectedUsers(selectedUsers.filter(s => s.id !== u.id))}>✕</button>
+                  <button
+                    onClick={() =>
+                      setSelectedUsers(
+                        selectedUsers.filter((s) => s.id !== u.id)
+                      )
+                    }
+                  >
+                    ✕
+                  </button>
                 </span>
               ))}
             </div>

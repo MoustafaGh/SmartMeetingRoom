@@ -1,20 +1,21 @@
 import Container from "./Container";
-import './Home.css';
-import SideBar from './SideBar';
+import "./Home.css";
+import SideBar from "./SideBar";
 import { useState } from "react";
 
 function Home({ onLogout, userRole, username }) {
-  const [activePage, setActivePage] = useState('Home');
-  const [notificationCount] = useState(7);
+  const [activePage, setActivePage] = useState("Home");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="Home">
+    <div className={`Home ${isSidebarCollapsed ? "collapsed" : ""}`}>
       <SideBar
         activePage={activePage}
         setActivePage={setActivePage}
         onSignOut={onLogout}
-        notificationCount={notificationCount}
         userRole={userRole}
+        collapsed={isSidebarCollapsed}
+        setCollapsed={setIsSidebarCollapsed}
       />
       <Container activePage={activePage} username={username} />
     </div>

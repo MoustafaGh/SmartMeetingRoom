@@ -1,7 +1,7 @@
 import React from "react";
 import "./MeetingCard.css";
 
-function MeetingCard({ title, description, startTime, endTime }) {
+function MeetingCard({ id, title, description, startTime, endTime, onClick }) {
   const start = new Date(startTime);
   const end = new Date(endTime);
   const diffMinutes = Math.floor((end - start) / 60000);
@@ -20,7 +20,7 @@ function MeetingCard({ title, description, startTime, endTime }) {
   });
 
   return (
-    <div className="meeting-card">
+    <div className="meeting-card" onClick={() => onClick?.(id)}>
       <div className="meeting-header">
         <h3>{title}</h3>
       </div>

@@ -1,3 +1,5 @@
+import './NavItem.css';
+
 function NavItem({ PageName, icon, isActive, collapsed, onClick, badgeCount }) {
   return (
     <div

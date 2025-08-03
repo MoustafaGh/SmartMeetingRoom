@@ -1,0 +1,10 @@
+.archived-classes-page {
+  padding: 20px;
+}
+
+.archived-meetings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+}

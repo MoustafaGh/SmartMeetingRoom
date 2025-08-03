@@ -1,33 +1,29 @@
-import MeetingCard from "./MeetingCard";
-import './HomePage.css'
+import MeetingList from "./MeetingList";
+import CreateMeetingModal from "./CreateMeetingModal";
+import { useState } from "react";
+import "./HomePage.css";
 
-function HomePage(){
-    const meetings = [
-    {
-      title: "Frontend Design Review",
-      description: "Discuss the new UI design for the dashboard.",
-      time: "10:00 AM",
-      duration: "1h"
-    },
-    {
-      title: "Backend API Planning",
-      description: "Plan endpoints for user and room management.",
-      time: "2:00 PM",
-      duration: "45m"
-    }
-  ];
-    return(
-        <div className='HomePage'>
-                {meetings.map((meeting, index) => (
-            <MeetingCard
-          key={index}
-          title={meeting.title}
-          description={meeting.description}
-          time={meeting.time}
-          duration={meeting.duration}
+function HomePage() {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <div className="home-page">
+      <div className="Create-Meeting">
+        <button className="create-meeting-btn" onClick={() => setShowModal(true)}>
+          + Create Meeting
+        </button>
+      </div>
+
+      <MeetingList userScoped={true} />
+
+      {showModal && (
+        <CreateMeetingModal
+          onClose={() => setShowModal(false)}
+          onCreate={() => setShowModal(false)}
         />
-      ))}
-        </div>
-    )
+      )}
+    </div>
+  );
 }
+
 export default HomePage;

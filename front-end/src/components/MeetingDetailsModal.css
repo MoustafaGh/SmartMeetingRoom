@@ -1,0 +1,126 @@
+.meeting-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.meeting-modal-content {
+  background: #fff;
+  display: flex;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 10px;
+  padding: 30px;
+  position: relative;
+  gap: 30px;
+}
+
+.meeting-info-left {
+  flex: 2;
+}
+
+.meeting-info-right {
+  flex: 1;
+  border-left: 1px solid #ddd;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.meeting-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description {
+  margin-top: 10px;
+}
+
+.time-info {
+  margin: 6px 0;
+}
+
+.audience-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.audience-section li {
+  background-color: #f1f1f1;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.mom-button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+
+.mom-button:hover {
+  background-color: #155ea8;
+}
+
+.mom-summary, .mom-notes {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.mom-file-list {
+  margin-top: 15px;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.mom-file-list li {
+  margin-bottom: 10px;
+}
+
+.mom-file-list a,
+.mom-file-list a:visited,
+.mom-file-list a:hover,
+.mom-file-list a:active {
+  text-decoration: none;
+}
+
+.mom-file-list a {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.mom-file-list a:hover {
+  background-color: #e6f0ff;
+  border-color: #007bff;
+  color: #007bff;
+}
+
